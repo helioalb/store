@@ -1,5 +1,5 @@
 import { dataSource } from "@medusajs/medusa/dist/loaders/database";
-import { Formula } from "src/models/formula";
+import { Formula } from "../models/formula";
 
 const FormulaRepository = dataSource.getRepository(Formula)
 

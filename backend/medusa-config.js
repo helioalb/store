@@ -51,12 +51,6 @@ const plugins = [
         open: process.env.OPEN_BROWSER !== "false",
       },
     },
-  },
-  {
-    resolve: 'medusa-plugin-variant-images',
-    options: {
-      enableUI: true,
-    },
   }
 ];
 
