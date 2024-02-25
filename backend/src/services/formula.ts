@@ -1,19 +1,23 @@
-import { TransactionBaseService } from "@medusajs/medusa"
+import { ProductVariantService, TransactionBaseService } from "@medusajs/medusa"
 import FormulaRepository from "src/repositories/formula"
 import { FormulaCreateInput } from "../types/formula"
 import { Repository } from "typeorm"
 import { Formula } from "src/models/formula"
+import { ProductVariant } from "../models/product-variant"
 
 type InjectedDependencies = {
-  formulaRepository: typeof FormulaRepository
+  formulaRepository: typeof FormulaRepository,
+  productVariantService: ProductVariantService
 }
 
 export default class FormulaService extends TransactionBaseService {
   private formulaRepository: Repository<Formula>
+  private productVariantService: ProductVariantService
 
   constructor(container: InjectedDependencies) {
     super(container)
     this.formulaRepository = this.createRepository(container.formulaRepository)
+    this.productVariantService = container.productVariantService
   }
 
   private createRepository(
@@ -23,8 +27,13 @@ export default class FormulaService extends TransactionBaseService {
 
   async create(input: FormulaCreateInput): Promise<Formula> {
     const formula = this.formulaRepository.create()
+
+    const productVariants = await this.productVariantService.list({ 
+      id: input.variant_ids 
+    })
+
     formula.name = input.name
-    formula.product_variants = []
+    formula.product_variants = productVariants
 
     return await this.formulaRepository.save(formula)
   }
